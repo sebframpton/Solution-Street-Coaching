@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution Street Coaching — Implementation Plan</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap');
+
+        :root {
+            --navy: #0a1628;
+            --teal: #1abc9c;
+            --teal-dark: #16a085;
+            --white: #f5f5f5;
+            --gold: #f0c27f;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background: #fff;
+            line-height: 1.7;
+            padding: 0;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .cover-page {
+                page-break-after: always;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Cover Page */
+        .cover-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--navy) 0%, #162d50 50%, var(--teal-dark) 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .cover-page .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .cover-page .logo-text span {
+            color: var(--teal);
+        }
+
+        .cover-page .subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-bottom: 48px;
+        }
+
+        .cover-page .doc-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 24px 0;
+            margin-bottom: 48px;
+        }
+
+        .cover-page .meta {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .cover-page .meta p {
+            margin-bottom: 4px;
+        }
+
+        /* Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            color: var(--navy);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--teal);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            color: var(--navy);
+            margin-top: 36px;
+            margin-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--teal-dark);
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        p,
+        li {
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        ul,
+        ol {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            font-size: 13px;
+        }
+
+        thead th {
+            background: var(--navy);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 14px;
+        }
+
+        tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        /* Info boxes */
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .info-box.important {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .info-box .label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Service cards grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        .service-item .num {
+            background: var(--teal);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 32px 0;
+        }
+
+        /* Verification checklist */
+        .check-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .check-list li {
+            padding: 6px 0 6px 28px;
+            position: relative;
+        }
+
+        .check-list li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+            color: var(--teal);
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--teal);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        .tag.new {
+            background: #22c55e;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <img src="Business%20Logo.jpg" alt="Solution Street Logo"
+            style="width: 180px; height: 180px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); background: white;">
+        <div class="logo-text">Solution <span>Street</span></div>
+        <div class="subtitle">Coaching Services</div>
+        <div class="doc-title">Website Implementation Plan</div>
+        <div class="meta">
+            <p>Prepared for Jason Sammut — Founder &amp; CEO</p>
+            <p>Date: 4 March 2026</p>
+            <p>Version 1.0</p>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <h1>1. Overview</h1>
+        <div
+            style="display: flex; gap: 24px; align-items: center; margin-bottom: 16px; background: var(--light-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border);">
+            <img src="Jason%20Profile.jpg" alt="Jason Sammut - Founder & CEO"
+                style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 4px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <p style="margin: 0; font-size: 15px; line-height: 1.6;">
+                Build a modern, premium single-page website for <strong>Solution Street Coaching Services</strong>,
+                an NDIS disability support provider founded by Jason Sammut. The site will communicate the company's
+                mission, values, and full list of services, while providing a clear path for potential clients to
+                get in touch.
+            </p>
+        </div>
+
+        <hr>
+
+        <h1>2. Technology Stack</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Layer</th>
+                    <th>Choice</th>
+                    <th>Rationale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Scaffold</td>
+                    <td>Vite (vanilla JS)</td>
+                    <td>Fast dev server, zero-config, no framework overhead</td>
+                </tr>
+                <tr>
+                    <td>Structure</td>
+                    <td>HTML5</td>
+                    <td>Semantic, accessible, SEO-friendly</td>
+                </tr>
+                <tr>
+                    <td>Styling</td>
+                    <td>Vanilla CSS</td>
+                    <td>Full control, no dependency</td>
+                </tr>
+                <tr>
+                    <td>Interactivity</td>
+                    <td>Plain JavaScript</td>
+                    <td>Lightweight, no library needed</td>
+                </tr>
+                <tr>
+                    <td>Fonts</td>
+                    <td>Google Fonts (Outfit + Inter)</td>
+                    <td>Modern, accessible typography</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h1>3. Design System</h1>
+
+        <h2>Colour Palette</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Value</th>
+                    <th>Usage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Navy</td>
+                    <td><code>#0a1628</code></td>
+                    <td>Backgrounds, headings</td>
+                </tr>
+                <tr>
+                    <td>Teal</td>
+                    <td><code>#1abc9c</code></td>
+                    <td>Primary accent, buttons, links</td>
+                </tr>
+                <tr>
+                    <td>Teal Dark</td>
+                    <td><code>#16a085</code></td>
+                    <td>Hover states, gradients</td>
+                </tr>
+                <tr>
+                    <td>Warm White</td>
+                    <td><code>#f5f5f5</code></td>
+                    <td>Text on dark, light backgrounds</td>
+                </tr>
+                <tr>
+                    <td>Soft Gold</td>
+                    <td><code>#f0c27f</code></td>
+                    <td>Highlight accents</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Typography</h2>
+        <ul>
+            <li><strong>Headings:</strong> Outfit (600–700 weight)</li>
+            <li><strong>Body:</strong> Inter (400–500 weight)</li>
+        </ul>
+
+        <h2>Visual Style</h2>
+        <ul>
+            <li>Dark-mode-first aesthetic</li>
+            <li>Glassmorphism cards with backdrop blur</li>
+            <li>Smooth gradients and subtle noise texture</li>
+            <li>Responsive: mobile-first with breakpoints at 768 px and 1024 px</li>
+        </ul>
+
+        <hr>
+
+        <h1>4. Page Sections</h1>
+        <p>The website is a single-page design with smooth-scrolling anchor links between sections.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Navbar</strong></td>
+                    <td>Sticky nav with logo text, anchor links (About · Services · Contact), mobile hamburger menu</td>
+                </tr>
+                <tr>
+                    <td><strong>Hero</strong></td>
+                    <td>Full-viewport section with gradient overlay, headline <em>"Empowering Lives Through the
+                            NDIS"</em>, Jason's intro copy, CTA button</td>
+                </tr>
+                <tr>
+                    <td><strong>About</strong></td>
+                    <td>Two-column layout — founder quote/story on the left, values (Communication, Hard Work, Results)
+                        as animated icon cards on the right</td>
+                </tr>
+                <tr>
+                    <td><strong>Services</strong></td>
+                    <td>11 service cards in a responsive CSS grid with hover-lift and glow effects (see full list below)
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>CTA Banner</strong></td>
+                    <td>Full-width gradient strip — <em>"Don't look any further — join Solution Street"</em> with CTA
+                        button</td>
+                </tr>
+                <tr>
+                    <td><strong>Contact</strong></td>
+                    <td>Contact form (Name, Email, Phone, Message) + address / phone / email details</td>
+                </tr>
+                <tr>
+                    <td><strong>Footer</strong></td>
+                    <td>Logo, quick links, copyright © 2026, social media icon placeholders</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h1>5. Services</h1>
+        <div class="services-grid">
+            <div class="service-item"><span class="num">1</span> Respite</div>
+            <div class="service-item"><span class="num">2</span> Individualised Mentoring</div>
+            <div class="service-item"><span class="num">3</span> Group Activities</div>
+            <div class="service-item"><span class="num">4</span> Plan Management</div>
+            <div class="service-item"><span class="num">5</span> Support Coordination</div>
+            <div class="service-item"><span class="num">6</span> Accessing the NDIS &amp; Setup</div>
+            <div class="service-item"><span class="num">7</span> Life Coaching</div>
+            <div class="service-item"><span class="num">8</span> Try a Trade Program</div>
+            <div class="service-item"><span class="num">9</span> Adventure Camp Getaways</div>
+            <div class="service-item"><span class="num">10</span> Life &amp; Work Skills Classes</div>
+            <div class="service-item"><span class="num">11</span> Community Participation</div>
+        </div>
+
+        <p>Each service will be displayed as an interactive card with an icon, title, and brief description.</p>
+
+        <hr>
+
+        <h1>6. Interactive Features</h1>
+        <ul>
+            <li>Smooth scroll for anchor navigation</li>
+            <li>Intersection Observer scroll-reveal animations on sections and cards</li>
+            <li>Mobile hamburger navigation (slide-in menu)</li>
+            <li>Service card hover effects (lift + glow)</li>
+            <li>Lightweight contact form validation with user-friendly error states</li>
+        </ul>
+
+        <hr>
+
+        <h1>7. SEO &amp; Accessibility</h1>
+        <ul>
+            <li>Descriptive <code>&lt;title&gt;</code> and <code>&lt;meta description&gt;</code></li>
+            <li>Open Graph tags for social media sharing</li>
+            <li>Single <code>&lt;h1&gt;</code> per page with proper heading hierarchy</li>
+            <li>Semantic HTML5 elements (<code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>,
+                <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>)</li>
+            <li>Alt text on all images</li>
+            <li>Keyboard-navigable interactive elements</li>
+        </ul>
+
+        <hr>
+
+        <h1>8. Files to Create</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>File</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="tag new">NEW</span></td>
+                    <td>index.html</td>
+                    <td>All page content and structure</td>
+                </tr>
+                <tr>
+                    <td><span class="tag new">NEW</span></td>
+                    <td>index.css</td>
+                    <td>Design system, layouts, components, animations</td>
+                </tr>
+                <tr>
+                    <td><span class="tag new">NEW</span></td>
+                    <td>main.js</td>
+                    <td>Scroll, navigation, animations, form validation</td>
+                </tr>
+                <tr>
+                    <td><span class="tag new">NEW</span></td>
+                    <td>vite.config.js</td>
+                    <td>Vite configuration (auto-generated)</td>
+                </tr>
+                <tr>
+                    <td><span class="tag new">NEW</span></td>
+                    <td>package.json</td>
+                    <td>Project metadata and scripts (auto-generated)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h1>9. Items for Review</h1>
+
+        <div class="info-box important">
+            <span class="label">⚠ Brand Colours &amp; Logo</span>
+            The proposed palette is dark navy + teal/green. If Solution Street has existing brand colours
+            or a logo file, these will be incorporated into the design instead.
+        </div>
+
+        <div class="info-box important">
+            <span class="label">⚠ Contact Form</span>
+            The contact form will be front-end only (no emails sent) for the initial build. A service
+            like Formspree or Netlify Forms can be added later for actual email delivery.
+        </div>
+
+        <hr>
+
+        <h1>10. Verification Plan</h1>
+        <h2>Browser Testing</h2>
+        <ul class="check-list">
+            <li>Run local dev server and open in browser</li>
+            <li>Verify navbar sticky behaviour and mobile hamburger toggle</li>
+            <li>Verify hero section with background and CTA</li>
+            <li>Verify about section layout and animated cards</li>
+            <li>Verify all 11 service cards display with hover effects</li>
+            <li>Verify contact form with validation feedback</li>
+            <li>Verify footer with links</li>
+            <li>Check responsive layout at mobile width (≤ 768 px)</li>
+        </ul>
+
+        <h2>Manual Verification</h2>
+        <ul class="check-list">
+            <li>Client review in their own browser</li>
+            <li>Confirm design, content, and responsiveness</li>
+        </ul>
+
+    </div>
+
+</body>
+
+</html>
