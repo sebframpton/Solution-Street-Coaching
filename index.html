@@ -263,7 +263,11 @@
                 </div>
 
                 <div class="contact-form-wrapper scroll-reveal-right">
-                    <form id="contact-form" class="glass-card form-card">
+                    <form id="contact-form" action="https://api.web3forms.com/submit" method="POST"
+                        class="glass-card form-card">
+                        <input type="hidden" name="access_key" value="a11bc520-0643-4e48-8922-ef074ee536fa">
+                        <input type="hidden" name="subject" value="New Contact Form Submission - Solution Street">
+                        <input type="hidden" name="from_name" value="Solution Street Website">
                         <h3>Send us a Message</h3>
                         <div class="form-group">
                             <label for="name">Full Name</label>

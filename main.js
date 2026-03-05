@@ -72,30 +72,44 @@ const contactForm = document.getElementById('contact-form');
 const formStatus = document.getElementById('form-status');
 
 if (contactForm) {
-  contactForm.addEventListener('submit', (e) => {
+  contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Simulate form submission
+    const formData = new FormData(contactForm);
     const btn = contactForm.querySelector('button[type="submit"]');
     const originalText = btn.textContent;
     btn.textContent = 'Sending...';
     btn.disabled = true;
 
-    setTimeout(() => {
-      // Mock success state
-      formStatus.textContent = 'Thank you! Your message has been sent successfully. We will be in touch soon.';
-      formStatus.classList.remove('hidden', 'error');
-      formStatus.classList.add('success');
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
       
-      contactForm.reset();
+      const result = await response.json();
+      
+      if (result.success) {
+        formStatus.textContent = 'Thank you! Your message has been sent successfully. We will be in touch soon.';
+        formStatus.classList.remove('hidden', 'error');
+        formStatus.classList.add('success');
+        contactForm.reset();
+      } else {
+        throw new Error(result.message || 'Form submission failed');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      formStatus.textContent = 'Oops! Something went wrong. Please try again or contact us directly.';
+      formStatus.classList.remove('hidden', 'success');
+      formStatus.classList.add('error');
+    } finally {
       btn.textContent = originalText;
       btn.disabled = false;
-
+      
       // Hide message after 5 seconds
       setTimeout(() => {
         formStatus.classList.add('hidden');
       }, 5000);
-
-    }, 1500);
+    }
   });
 }
